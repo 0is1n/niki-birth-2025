@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mystery Gift Box</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #fdf6e3, #ffe0e0);
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 30px;
+    }
+    .box-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+    }
+    .gift-box {
+      background: url('gift.png') no-repeat center center;
+      background-size: cover;
+      width: 200px;
+      height: 200px;
+      cursor: pointer;
+      position: relative;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+    .gift-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 200px;
+    }
+    .gift-content {
+      display: none;
+      margin-top: 10px;
+    }
+    .gift-image {
+      max-width: 200px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .confetti {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .dancer {
+      position: fixed;
+      z-index: 50;
+      width: 200px;
+      height: 200px;
+      pointer-events: none;
+    }
+
+    .dancer img {
+      width: 100%;
+      height: auto;
+    }
+
+    .big-dancer {
+      width: 300px;
+      height: 300px;
+    }
+
+
+    @keyframes danceWiggle {
+      from { transform: rotate(-5deg) scale(1); }
+      to { transform: rotate(5deg) scale(1.05); }
+    }
+
+
+  </style>
+</head>
+<body>
+  <h1>What the fuck? It's your birthday?</h1>
+  <div class="box-container">
+    <div class="gift-wrapper">
+      <div class="gift-box" onclick="revealGift(0)"></div>
+      <div class="gift-content" id="gift-0">
+        <img class="gift-image" src="medium roast.png" alt="Gift 1">
+        <div class="message">Dafuq?</div>
+      </div>
+    </div>
+    <div class="gift-wrapper">
+      <div class="gift-box" onclick="revealGift(1)"></div>
+      <div class="gift-content" id="gift-1">
+        <img class="gift-image" src="vanilla.png" alt="Gift 2">
+        <div class="message">nah i'm like bruh🤘</div>
+      </div>
+    </div>
+    <div class="gift-wrapper">
+      <div class="gift-box" onclick="revealGift(2)"></div>
+      <div class="gift-content" id="gift-2">
+        <img class="gift-image" src="ceramic mug.png" alt="Gift 3">
+        <div class="message">That shit's ceramic? Aw hell nah!!!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dancer" style="top: 10%; left: 5%;"><img src="dance1.gif"></div>
+  <div class="dancer" style="top: 70%; left: 10%;"><img src="dance2.gif"></div>
+  <div class="dancer big-dancer" style="top: 20%; right: 5%;"><img src="dance3.gif"></div>
+  <div class="dancer" style="bottom: 10%; right: 15%;"><img src="dance4.gif"></div>
+
+  <audio id="hooray" src="Hooray.mp3"></audio>
+  <audio id="what" src="what.mp3"></audio>
+  <audio id="fart" src="fart.mp3"></audio>
+  <audio id="bgmusic" src="bg.mp3" loop></audio>
+  <button id="playMusic" onclick="startMusic()" style="margin-top: 20px; padding: 10px 20px; font-size: 16px; background-color: red; color: white; border: none; border-radius: 8px; cursor:       pointer;">
+    Press To Start
+  </button>
+
+  <script>
+    function startMusic() {
+      const music = document.getElementById('bgmusic');
+      music.play();
+      document.getElementById('playMusic').style.display = 'none';
+    }
+
+    function revealGift(index) {
+      const box = document.querySelectorAll('.gift-box')[index];
+      const content = document.getElementById(`gift-${index}`);
+      box.style.visibility = 'hidden';
+      content.style.display = 'block';
+
+      if (index === 0) {
+        document.getElementById('what').play();
+      }
+      if (index === 1) {
+        document.getElementById('fart').play();
+      }
+      if (index === 2) {
+        document.getElementById('hooray').play();
+      }
+      launchConfetti();
+    }
+
+    function launchConfetti() {
+      const confettiContainer = document.createElement('div');
+      confettiContainer.classList.add('confetti');
+      document.body.appendChild(confettiContainer);
+
+      for (let i = 0; i < 100; i++) {
+        const confetto = document.createElement('div');
+        confetto.style.position = 'absolute';
+        confetto.style.width = '8px';
+        confetto.style.height = '8px';
+        confetto.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+        confetto.style.left = `${Math.random() * window.innerWidth}px`;
+        confetto.style.top = '-10px';
+        confetto.style.opacity = 0.9;
+        confetto.style.borderRadius = '50%';
+        confettiContainer.appendChild(confetto);
+
+        const fall = confetto.animate([
+          { transform: 'translateY(0)' },
+          { transform: `translateY(${Math.random() * window.innerHeight}px)` }
+        ], {
+          duration: Math.random() * 2000 + 1000,
+          easing: 'ease-out',
+          fill: 'forwards'
+        });
+
+        fall.onfinish = () => confetto.remove();
+      }
+
+      setTimeout(() => confettiContainer.remove(), 3000);
+    }
+  </script>
+</body>
+</html>
